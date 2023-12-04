@@ -60,8 +60,8 @@ fun getScratchTickets(currentTicket: Int, winningValuesList: List<List<Int>>, ac
             it+copies
         } else it
     }
-//    println(currentTicket)
-//    println(ticketMap)
-//    println(newTicketMap)
+    println(currentTicket)
+    println(ticketMap)
+    println(newTicketMap)
     return getScratchTickets(currentTicket+1,  winningValuesList, actualValueList, newTicketMap)
 }
