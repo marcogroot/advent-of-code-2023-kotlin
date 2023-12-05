@@ -61,13 +61,13 @@ fun main() {
 }
 
 // helper functions
-fun tooManyCubes(colour: String, max: Int, game: String): Boolean =
+private fun tooManyCubes(colour: String, max: Int, game: String): Boolean =
     game.split(',')
         .filter { it.contains(colour) }
         .map { it.replace(colour, "") }
         .maxOf { it.toInt() } > max
 
-fun getMinimumCubes(colour: String, game: String): Int =
+private fun getMinimumCubes(colour: String, game: String): Int =
     game.split(',')
         .filter { it.contains(colour) }
         .map { it.replace(colour, "") }

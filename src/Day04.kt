@@ -47,7 +47,7 @@ fun main() {
     println(part2(finalInput))
 }
 
-fun getScratchTickets(currentTicket: Int, winningValuesList: List<List<Int>>, actualValueList: List<List<Int>>, ticketMap: List<Int>) : Int {
+private fun getScratchTickets(currentTicket: Int, winningValuesList: List<List<Int>>, actualValueList: List<List<Int>>, ticketMap: List<Int>) : Int {
     if (currentTicket == ticketMap.size) return ticketMap.sumOf { it }
     val winningValues = winningValuesList[currentTicket]
     val actualValues = actualValueList[currentTicket]
@@ -60,8 +60,5 @@ fun getScratchTickets(currentTicket: Int, winningValuesList: List<List<Int>>, ac
             it+copies
         } else it
     }
-    println(currentTicket)
-    println(ticketMap)
-    println(newTicketMap)
     return getScratchTickets(currentTicket+1,  winningValuesList, actualValueList, newTicketMap)
 }

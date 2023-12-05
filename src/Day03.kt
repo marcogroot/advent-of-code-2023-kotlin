@@ -62,7 +62,7 @@ fun main() {
     part2(finalInput).println()
 }
 
-val directions = listOf(
+private val directions = listOf(
     Pair(-1, -1),
     Pair(-1, 0),
     Pair(-1, 1),
@@ -73,7 +73,7 @@ val directions = listOf(
     Pair(1, 1),
 )
 
-fun findNthOccurrenceOf(str: String, subStr: String, occurrence: Int, startingIndex: Int = 0) : Int {
+private fun findNthOccurrenceOf(str: String, subStr: String, occurrence: Int, startingIndex: Int = 0) : Int {
     val currentOccurrence = str.indexOf(subStr, startingIndex)
     return when (occurrence) {
     1 -> if (subStr.length == 3 || currentOccurrence+subStr.length == str.length ) { currentOccurrence}
@@ -88,7 +88,7 @@ fun findNthOccurrenceOf(str: String, subStr: String, occurrence: Int, startingIn
     }
 }
 
-fun getGearValue(r: Int, c: Int, input: List<String>, directionIndex: Int, gearValues: List<Int>) : Int {
+private fun getGearValue(r: Int, c: Int, input: List<String>, directionIndex: Int, gearValues: List<Int>) : Int {
     if (gearValues.size > 2) return 0;
     if (directionIndex == 8){
         return if (gearValues.size < 2) {
@@ -106,7 +106,7 @@ fun getGearValue(r: Int, c: Int, input: List<String>, directionIndex: Int, gearV
     return getGearValue(r, c, testObject.input, directionIndex+1, testObject.gearValues)
 }
 
-fun getGearNumber(r: Int, c: Int, input: List<String>, gearValues: List<Int>) : TestObject =
+private fun getGearNumber(r: Int, c: Int, input: List<String>, gearValues: List<Int>) : TestObject =
     if (r >= 0 && r < input.size && c >= 0 && c < input.first().length && input[r][c].isDigit()) {
         val touching = input[r][c]
         val right = if (c+1 in 0..<input[0].length && input[r][c+1].isDigit()) input[r][c + 1] else ' '
@@ -136,7 +136,7 @@ fun getGearNumber(r: Int, c: Int, input: List<String>, gearValues: List<Int>) : 
         )
     } else TestObject(input, gearValues)
 
-data class TestObject(
+private data class TestObject(
     val input: List<String>,
     val gearValues: List<Int>,
 )
