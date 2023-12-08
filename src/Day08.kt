@@ -12,21 +12,17 @@ fun main() {
             }
         }.toMap()
 
-
-        var current = "AAA"
-        var x = 0
-        var instructionIndex = 0
-        while (current != "ZZZ") {
-            x++
-            val instruction = instructions[instructionIndex]
-            instructionIndex++
-            if (instructionIndex == instructions.length) instructionIndex = 0
+        tailrec fun dfs(current: String, instructionIndex: Int, score: Int) : Int {
+            if (current == "ZZZ") return score
+            val instruction = instructions[instructionIndex%(instructions.length)]
             val right = instruction == 'R'
-            if (right) {
-                current = mappings[current]!!.second
-            } else current = mappings[current]!!.first
+            val newValue = if (right) {
+                mappings[current]!!.second
+            } else mappings[current]!!.first
+            return(dfs(newValue, instructionIndex+1, score+1))
         }
-        return x
+
+        return dfs("AAA", 0, 0)
     }
 
     fun part2(input: List<String>) : Long {
@@ -42,39 +38,31 @@ fun main() {
             }
         }.toMap()
 
-        var points = mappings.keys.mapNotNull { if (it[2] == 'A') it else null }
+        val points = mappings.keys.mapNotNull { if (it[2] == 'A') it else null }
 
-        var lcms = points.map { point ->
-            var current = point
-            var instructionIndex = 0
-            var x = 0L
-            while (current[2] != 'Z') {
-                x++
-                val instruction = instructions[instructionIndex]
-                instructionIndex++
-                if (instructionIndex == instructions.length) instructionIndex = 0
+        val lcms = points.map { point ->
+            tailrec fun findFirstZ(current: String, instructionIndex: Int) : String {
+                if (current[2] == 'Z') return current
+                val instruction = instructions[instructionIndex%(instructions.length)]
                 val right = instruction == 'R'
-                if (right) {
-                    current = mappings[current]!!.second
-                } else current = mappings[current]!!.first
+                val newValue = if (right) {
+                    mappings[current]!!.second
+                } else mappings[current]!!.first
+                return(findFirstZ(newValue, instructionIndex+1))
             }
 
-            x = 0
-            var flag = true
-            while (current[2] != 'Z' || flag) {
-                flag = false
-                x++
-                val instruction = instructions[instructionIndex]
-                instructionIndex++
-                if (instructionIndex == instructions.length) instructionIndex = 0
+            val firstZ = findFirstZ(point, 0)
+            tailrec fun findLoopSize(current: String, instructionIndex: Int, score: Long, flag: Boolean = true) : Long {
+                if (current[2] == 'Z' && flag) return score
+                val instruction = instructions[instructionIndex%(instructions.length)]
                 val right = instruction == 'R'
-                if (right) {
-                    current = mappings[current]!!.second
-                } else current = mappings[current]!!.first
+                val newValue = if (right) {
+                    mappings[current]!!.second
+                } else mappings[current]!!.first
+                return(findLoopSize(newValue, instructionIndex+1, score+1))
             }
-            x
+            findLoopSize(firstZ, 0, 0, false)
         }
-
         return findLCMOfListOfNumbers(lcms)
     }
 
@@ -82,12 +70,11 @@ fun main() {
     val finalInput = readInput("day$currentDay/Final")
 //     part 1
     val part1TestInput = readInput("day$currentDay/Test1")
-//    println(part1(part1TestInput))
-////    check(part1(part1TestInput== 288L)
-//    part1(finalInput).println()
+    println(part1(part1TestInput))
+    part1(finalInput).println()
 ////   )  // part 2
     val part2TestInput = readInput("day$currentDay/Test2")
-//    println(part2(part2TestInput))
+    println(part2(part2TestInput))
     part2(finalInput).println()
 }
 
