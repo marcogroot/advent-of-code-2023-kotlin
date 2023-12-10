@@ -1,9 +1,5 @@
 fun main() {
     fun part1(input: List<String>) : Int {
-        var data = input.map {
-            List(it.length) { 0 }.toMutableList()
-        }.toMutableList()
-
         val start = input.mapIndexed { r, row ->
             row.mapIndexedNotNull { c, value -> 
                 if (value == 'S') {
@@ -12,31 +8,22 @@ fun main() {
             }
         }.flatten().first()
 
-        input.forEach { println(it) }
-        println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        fun isValid(r: Int, c: Int) : Boolean =
-            r >= 0 && r < input.size && c >= 0 && c < input[0].length
-
-        fun dfs(r: Int, c: Int, previousR: Int, previousC: Int, distance: Int) : Unit {
+        tailrec fun dfs(r: Int, c: Int, previousR: Int, previousC: Int, distance: Int) : Int {
             val current = input[r][c]
-//            data.forEach { println(it) }
-//            println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-            data[r][c] = maxOf(distance, data[r][c])
-
-            if (current == 'S' && distance != 0) return
 
             val directions = pipes[current]!!
-            directions.forEach { direction ->
+            val nextDirection = directions.firstNotNullOf { direction ->
                 val newRow = r + direction.first
                 val newCol = c + direction.second
-                if (isValid(newRow, newCol) && (newRow != previousR || newCol != previousC)) {
-                    dfs(newRow, newCol, r, c, distance + 1)
-                }
+                if (newRow != previousR || newCol != previousC) {
+                    Pair(newRow, newCol)
+                } else null
             }
-        }
 
-        dfs(start.first, start.second, -1, -1, 0)
-        return (data[start.first][start.second] + 1) / 2
+            return if (current == 'S' && distance != 0) { return distance }
+            else dfs(nextDirection.first, nextDirection.second, r, c, distance+1)
+        }
+        return (dfs(start.first, start.second, -1, -1, 0) + 1) / 2
     }
 
     fun part2(input: List<String>) : Int  {
@@ -55,7 +42,7 @@ fun main() {
 //    part2(finalInput).println()
 }
 
-val pipes: Map<Char, List<Pair<Int, Int>>> = mapOf(
+private val pipes: Map<Char, List<Pair<Int, Int>>> = mapOf(
     '|' to listOf(Pair(1, 0), Pair(-1, 0)),
     '-' to listOf(Pair(0, 1), Pair(0, -1)),
     'L' to listOf(Pair(-1, 0), Pair(0, 1)),

@@ -8,8 +8,7 @@ fun main() {
             val trimmed = it.trim()
             if (trimmed.isEmpty()) null else it.toLong()
         }
-        println(times)
-        println(distances)
+
         return times.mapIndexed { i, time ->
             val target = distances[i]
             (0..time).sumOf {
