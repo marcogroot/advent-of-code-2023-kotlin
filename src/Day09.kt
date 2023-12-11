@@ -16,11 +16,10 @@ fun main() {
     val finalInput = readInput("day$currentDay/Final")
 //     part 1
     val part1TestInput = readInput("day$currentDay/Test1")
-//    println(part1(part1TestInput))
-//    part1(finalInput).println()
-////   )  // part 2
+    println(part1(part1TestInput))
+    part1(finalInput).println()
+//  part 2
     val part2TestInput = readInput("day$currentDay/Test2")
-//    part2(part2TestInput)
     part2(finalInput).println()
 }
 
@@ -29,10 +28,7 @@ private fun extrapolateNextValue(previousRow: List<Long>) : Long {
         if (i == 0) null
         else value - previousRow[i-1]
     }
-    println(currentRow)
-    if (currentRow.count {it == 0L} == currentRow.size) {
-        return 0
-    }
+    if (currentRow.count {it == 0L} == currentRow.size) return 0
 
     return currentRow.last() + extrapolateNextValue(currentRow)
 }
@@ -43,8 +39,7 @@ private fun extrapolatePreviousValue(previousRow: List<Long>, firstValues: List<
         else value - previousRow[i-1]
     }
 
-    if (currentRow.count {it == 0L} == currentRow.size) {
-        return firstValues + 0L
-    }
+    if (currentRow.count {it == 0L} == currentRow.size) return firstValues + 0L
+
     return extrapolatePreviousValue(currentRow, firstValues+currentRow.first())
 }
