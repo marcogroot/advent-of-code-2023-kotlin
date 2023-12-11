@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 fun main() {
     fun part1(input: List<String>) : Int {
         val start = input.mapIndexed { r, row ->
@@ -52,53 +54,26 @@ fun main() {
         }
 
         val pipeValues = dfsForPipe(start.first, start.second, -1, -1, emptyList())
+        return (pipeValues.sumOf {
 
-        fun isValid(r: Int, c: Int) = r >= 0 && r < input.size && c >= 0 && c < input[0].length
+                var leftVals = 0
+                var rightVals = 0
 
-        fun dfs(curr: Pair<Int, Int>, thisTraverse: Set<Pair<Int, Int>>, visited: Set<Pair<Int, Int>>) : Set<Pair<Int, Int>> {
-            if (curr in visited) return thisTraverse
-
-            val updatedVisited = visited + curr
-            val updatedCoords = thisTraverse + curr
-            return cardinalDirections.mapNotNull { direction ->
-                val newRow = curr.first + direction.first
-                val newCol = curr.second + direction.second
-                val newCoords = Pair(newRow, newCol)
-                if (isValid(newRow, newCol) && input[newRow][newCol] == '.' && newCoords !in visited) {
-                    dfs(newCoords, updatedCoords, updatedVisited)
-                } else null
-            }.fold(updatedCoords) { acc, newPoints -> acc + newPoints }
-        }
-
-        val visited: MutableSet<Pair<Int, Int>> = mutableSetOf()
-        val enclosed: MutableSet<Pair<Int, Int>> = mutableSetOf()
-
-        val b = input.mapIndexed { r, row ->
-            row.mapIndexed { c, _ ->
-                if (input[r][c] != '.') { 0 }
-                else {
-                    val dfsResult = dfs(Pair(r, c), emptySet(), visited)
-                    println(dfsResult)
-                    visited += dfsResult
-                    if (dfsResult.any { (it.first == 0 || it.first == (input.size-1) || it.second == 0 || it.second == (input[0].length-1)) }) {
-                        0
-                    } else {
-                        enclosed += dfsResult
-                        dfsResult.size
-                    }
+                for (i in it.second..0) {
+                    val currentCoord = Pair(it.first, i)
+                    leftVals = if (currentCoord in pipeValues) {
+                        abs(it.second - i)-1
+                    } else 0
                 }
-            }.sumOf { it }
-        }.sumOf { it }
-
-        input.mapIndexed { r, row ->
-            row.mapIndexed { c, _ ->
-                if (Pair(r, c) in enclosed) print("X")
-                else print(input[r][c])
+                for (i in it.second..input[0].length) {
+                    val currentCoord = Pair(it.first, i)
+                    rightVals = if (currentCoord in pipeValues) {
+                        abs(it.second - i)-1
+                    } else 0
                 }
-            print("\n")
-        }
 
-        return b
+                leftVals+rightVals
+        })/2
 
     }
 
