@@ -1,12 +1,13 @@
 fun main() {
     fun part1(input: List<String>) : Long =
         input[0].indices.map { c -> input.indices.map { r -> input[r][c] } }
-            .sumOf{getScore(0, 0, 0, it) }
+            .sumOf{ getScore(0, 0, 0, it) }
 
     fun part2(input: List<String>) : Long {
         val mapRef = input.map {
             it.toMutableList()
         }.toMutableList()
+
         val rowSize = mapRef.size
         val colSize = mapRef.first().size
 
@@ -58,7 +59,7 @@ fun main() {
         var previous = 0L
         (1..10000000).mapNotNull { count ->
             performCycle()
-            val currentScore = mapRef.first().indices.sumOf{getScore2(it)}
+            val currentScore = mapRef.first().indices.sumOf{ getScore2(it) }
             if (previous == currentScore && count > 1000) return (currentScore)
             previous = currentScore
         }
