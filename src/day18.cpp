@@ -5,12 +5,13 @@
 #include <unordered_set>
 #include <utility>
 #include<set>
+#include<vector>
 using namespace std;
 
 int main() {
     // Replace "yourfilename.txt" with the actual name of your text file
     string filename = "somefile.txt";
-    set<pair<int, int>> s;
+    set<pair<long long, long long>> s;
     // Create an >input file stream object
     std::ifstream inputFile(filename);
 
@@ -27,12 +28,12 @@ int main() {
         std::istringstream iss(line);
 
         // Variables to store the two numbers
-        int number1, number2;
+        long long number1, number2;
 
         // Try to extract two numbers from the string stream
         if (iss >> number1 >> number2) {
             // Process the numbers as needed
-            pair<int, int> p = {number1, number2};
+            pair<long long, long long> p = {number1, number2};
             s.insert(p);
 
         } else {
@@ -40,12 +41,36 @@ int main() {
             std::cerr << "Error parsing line: " << line << std::endl;
         }
     }
-    ofstream myfile;
-    myfile.open ("outputFile.txt");
-    for (pair<int, int> x : s) {
-        myfile << x.first << " " << x.second << "\n";
+
+    cout << "set done" << endl;
+
+    vector<pair<long long, long long>> v1;
+    for (auto& x : s) {
+        v1.push_back(x);
     }
-    myfile.close();
+    cout << "made vector 1" << endl;
+    vector<pair<long long, long long>> v2;
+    for (long long i = 1; i < v1.size(); i++) {
+        v2.push_back(v1[i]);
+    }
+    cout << "made vector 2" << endl;
+    long long sum = 0;
+    
+    for (long long i = 0 ; i < v1.size(); i++) {
+        if (i % 10000 == 0) {
+            cout << "boop\n";
+        }
+        pair<long long, long long> a = v1[i];
+        pair<long long, long long> b = v2[i];
+        sum += a.second * b.first - a.first * b.second;
+    }
+    cout << sum << endl;
+    sum /= 2;
+
+    cout << sum << endl;
+    
+    
+    
     cout << s.size() << endl;
     // Close the file
     inputFile.close();
