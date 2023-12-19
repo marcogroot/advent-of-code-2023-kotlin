@@ -1,104 +1,112 @@
+import java.util.PriorityQueue
+import kotlin.math.abs
+
 fun main() {
-    fun part1(input: List<String>) : Int {
-        val visited = mutableMapOf<Node, Int>()
+    fun part1(input: List<String>) : Long = getAnswer(input, 3)
 
-        fun dfs(curr: Point, currentDirection: Pair<Int, Int>, streak: Int, total: Int) : Unit {
-            if (total > 110) return
-            val r = curr.r
-            val c = curr.c
-            if (r < 0 || c < 0 || r >= input.size || c >= input.first().length || streak >= 3) return
-
-            val currentSquare = input[r][c].digitToInt()
-            val pointsAtSquare = currentSquare+total
-            println("visiting $r $c with score $pointsAtSquare")
-            val currentNode = Node(curr, currentDirection, streak)
-
-            if (visited.containsKey(currentNode)) {
-                val existingScore = visited[currentNode]!!
-                if (existingScore < pointsAtSquare) return
-            }
-            visited[currentNode] = pointsAtSquare
-            if (r == input.size-1 && c == input.first().length-1) return
-
-            val oppositeDirection = oppositeDirections[currentDirection]!!
-            return directions.minus(oppositeDirection).forEach {
-                val newR = r + it.first
-                val newC = c + it.second
-                val newPoint = Point(newR, newC)
-                 if (it == currentDirection) {
-                    dfs(newPoint, currentDirection, streak+1, pointsAtSquare)
-                 } else dfs(newPoint, currentDirection, 0, pointsAtSquare)
-            }
-        }
-
-        dfs(Point(0, 0), Pair(0, 1), 0, 0)
-
-        val a = input.mapIndexed { r, row ->
-           row.mapIndexed { c, value ->
-              val bestNodes = visited.keys.filter { it.point == Point(r, c) }
-               bestNodes.mapNotNull {
-                   if (visited.containsKey(it)) {
-                       visited[it]
-                   } else null
-               }.minOf { it }
-           }
-        }
-
-        a.forEach{
-            println(it)
-        }
-        val bestNode = visited.keys.filter {
-            it.point == Point(input.size - 1, input.first().length - 1)
-        }
-
-        val b = bestNode.mapNotNull {
-            if (visited.containsKey(it)) {
-                visited[it]
-            } else null
-        }
-
-        println(b)
-
-        return 0
-    }
-
-    fun part2(input: List<String>) : Int {
-        return 0
-    }
+    fun part2(input: List<String>) : Long = getAnswer(input, 10,4)
 
     val currentDay = "17"
     val finalInput = readInput("day$currentDay/Final")
 //  part 1
     val part1TestInput = readInput("day$currentDay/Test1")
-    part1(part1TestInput).println()
+//    part1(part1TestInput).println()
 //    part1(finalInput).println()
 //  part 2
     val part2TestInput = readInput("day$currentDay/Test2")
 //    part2(part1TestInput).println()
-//    part2(finalInput).println()
+    part2(finalInput).println()
+//
 }
 
-data class Point(
-    val r: Int,
-    val c: Int,
+private val directions: List<Pair<Long, Long>> = listOf(
+    Pair(0L, 1L),
+    Pair(1L, 0L),
+    Pair(-1L, 0L),
+    Pair(0, -1),
 )
 
-private val directions = listOf(
-    Pair(0, 1),
-    Pair(1, 0),
-    Pair(-1, 0),
-    //Pair(0, -1),
-)
-
-val oppositeDirections = mapOf(
-    Pair(1, 0) to Pair(-1, 0),
-    Pair(-1, 0) to Pair (1, 0),
-    Pair(0, 1) to Pair(0, -1),
-    Pair(0, -1) to Pair(0, 1),
+val oppositeDirections: Map<Pair<Long, Long>, Pair<Long, Long>> = mapOf(
+    Pair(1L, 0L) to Pair(-1L, 0L),
+    Pair(-1L, 0L) to Pair (1L, 0L),
+    Pair(0L, 1L) to Pair(0L, -1L),
+    Pair(0L, -1L) to Pair(0L, 1L),
 )
 
 data class Node(
-    val point: Point,
-    val directions: Pair<Int, Int>,
-    val streak: Int,
+    val coordinates: Pair<Long, Long>,
+    val direction: Pair<Long, Long>,
+    val streak: Long,
+    val score: Long,
 )
+fun Node.toState(): State = State(coordinates = coordinates, direction = direction, streak = streak)
+
+data class State(
+    val coordinates: Pair<Long, Long>,
+    val direction: Pair<Long, Long>,
+    val streak: Long,
+)
+
+private fun getAnswer(input: List<String>, consecutiveMax: Long, consecutiveMin: Long? = null) : Long {
+    val visited = mutableMapOf<State, Long>()
+    val endCoordinates = Pair(input.size-1.toLong(), input.first().length-1.toLong())
+    fun isValid(r: Long, c: Long) : Boolean = (r in input.indices && c in input.first().indices)
+
+    val queue = PriorityQueue<Node> { node1, node2 ->
+        (node1.score-node2.score).toInt()
+    }
+
+    queue.add(
+        Node(
+            Pair(0, 1),
+            Pair(0, 1),
+            0,
+            0,
+        )
+    )
+    queue.add(
+        Node(
+            Pair(1, 0),
+            Pair(1, 0),
+            0,
+            0,
+        )
+    )
+
+    var bestAnswer = Long.MAX_VALUE
+
+    while (queue.isNotEmpty()) {
+        val curr = queue.peek()
+        queue.remove()
+        val coords = curr.coordinates
+        val newScore = curr.score + input[coords.first.toInt()][coords.second.toInt()].digitToInt()
+
+        if (curr.coordinates == endCoordinates) {
+            bestAnswer = minOf(bestAnswer, newScore)
+            continue
+        }
+
+        for (direction in directions) {
+            if (direction == curr.direction && curr.streak == consecutiveMax-1L) continue
+            if (direction == oppositeDirections[curr.direction]) continue
+            if (consecutiveMin != null && (curr.streak < consecutiveMin-1) && direction != curr.direction) continue
+
+            val newR = coords.first+direction.first
+            val newC = coords.second+direction.second
+
+            if (isValid(newR, newC)) {
+                val newNode =  Node(
+                    Pair(newR, newC),
+                    direction,
+                    if (direction==curr.direction) curr.streak+1 else 0,
+                    newScore,
+                )
+                val newState = newNode.toState()
+                if (visited.containsKey(newState)) continue
+                visited[newState] = newScore
+                queue.add(newNode)
+            }
+        }
+    }
+    return bestAnswer
+}
