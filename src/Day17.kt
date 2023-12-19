@@ -97,7 +97,7 @@ val oppositeDirections = mapOf(
     Pair(0, -1) to Pair(0, 1),
 )
 
-data class Node(
+private data class Node(
     val point: Point,
     val directions: Pair<Int, Int>,
     val streak: Int,
