@@ -1,4 +1,6 @@
 import java.util.PriorityQueue
+import Utils.println
+import Utils.readInput
 
 fun main() {
     fun part1(input: List<String>) : Long = getAnswer(input, 3)

@@ -1,3 +1,6 @@
+import Utils.println
+import Utils.readInput
+
 fun main() {
     fun part1(input: List<String>) : Long {
         val times = input[0].split(':').last().split(' ').mapNotNull {

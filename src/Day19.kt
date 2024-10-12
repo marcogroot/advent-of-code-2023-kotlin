@@ -1,3 +1,6 @@
+import Utils.println
+import Utils.readInput
+
 fun main() {
     fun part1(input: List<String>) : Long {
         val processedInput = processInput(input)

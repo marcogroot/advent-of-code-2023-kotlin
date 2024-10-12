@@ -1,3 +1,6 @@
+import Utils.println
+import Utils.readInput
+
 fun main() {
     fun part1(input: List<String>) : Long {
         val seeds = input.first().split(':').last().split(' ').mapNotNull { if (it.isEmpty()) null else it.toLong() }

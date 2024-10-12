@@ -1,3 +1,6 @@
+import Utils.println
+import Utils.readInput
+
 fun main() {
     fun part1(input: List<String>) : Long =
         input[0].indices.map { c -> input.indices.map { r -> input[r][c] } }

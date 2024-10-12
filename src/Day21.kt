@@ -1,3 +1,7 @@
+import Utils.println
+import Utils.readInput
+import Utils.directions
+
 fun main() {
     fun part1(input: List<String>, maximumSteps: Int) : Long {
         val start = input.mapIndexed { r, row ->
@@ -38,12 +42,11 @@ fun main() {
 
         dfs(start, maximumSteps)
 
-//        println(destinations.sortedBy { it.second }.sortedBy { it.first })
         return destinations.size.toLong()
     }
 
-    fun part2(input: List<String>) : Long {
-        return 0
+    fun part2(input: List<String>, maximumSteps: Int) : Long {
+       return part1(input, maximumSteps)
     }
 
     val currentDay = "21"
@@ -58,14 +61,3 @@ fun main() {
 //    part2(finalInput).println()
 }
 
-private data class Step(
-    val coordinates: Pair<Int, Int>,
-    val number: Int,
-)
-
-private val directions = listOf(
-    Pair(0, 1),
-    Pair(1, 0),
-    Pair(-1, 0),
-    Pair(0, -1),
-)

@@ -1,4 +1,6 @@
 import kotlin.math.abs
+import Utils.println
+import Utils.readInput
 
 fun main() {
     fun part1(input: List<String>) = getAnswer(input, 2L)
