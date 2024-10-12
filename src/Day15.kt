@@ -81,4 +81,3 @@ private fun String.getBoxNumber() : Int =
         val currentValue = acc+c.code
     (currentValue*17).mod(256)
 }
-
