@@ -1,6 +1,3 @@
-import java.util.LinkedList
-import java.util.Queue
-
 fun main() {
     fun part1(input: List<String>, maximumSteps: Int) : Long {
         val start = input.mapIndexed { r, row ->
@@ -9,36 +6,40 @@ fun main() {
            }
         }.flatten().firstNotNullOf { it }
 
-        val visited = mutableMapOf<Int, MutableSet<Pair<Int, Int>>>()
-        val queue : Queue<Step> = LinkedList()
-        queue.add(Step(start, maximumSteps))
-        visited[maximumSteps] = mutableSetOf(start)
-        var turn = maximumSteps
-        while (queue.isNotEmpty()) {
-            val curr = queue.peek()
-            queue.remove()
-            if (curr.number == 0) {
-                break
+        val dp = MutableList<MutableList<MutableList<Boolean>>>(input.size) {
+            MutableList(input.first().length) {
+                MutableList(65) { false }
             }
-            if (curr.number < turn) {
-                turn = curr.number
+        }
 
-                println("current turn is $turn")
+        val destinations : MutableSet<Pair<Int, Int>> = mutableSetOf()
+
+        fun dfs(curr: Pair<Int, Int>, stepsLeft: Int) {
+            if (stepsLeft == 0) {
+                destinations.add(curr)
+                return
             }
-            if (visited.containsKey(curr.number)) {
-                visited[curr.number]!!.add(curr.coordinates)
-            } else visited[curr.number] = mutableSetOf<Pair<Int, Int>>(curr.coordinates)
+            if (dp[curr.first][curr.second][stepsLeft]) return
 
-            directions.forEach { direction ->
-                val adjacentRow = curr.coordinates.first + direction.first
-                val adjacentColumn = curr.coordinates.second + direction.second
-                val newCoord = Pair(adjacentRow, adjacentColumn)
-                if (adjacentRow in input.indices && adjacentColumn in input.first().indices && newCoord !in visited[curr.number]!! && input[adjacentRow][adjacentColumn] != '#') {
-                    queue.add(Step(newCoord, curr.number-1))
+
+            dp[curr.first][curr.second][stepsLeft] = true
+
+            directions.forEach {
+                val newRow = curr.first + it.first
+                val newCol = curr.second + it.second
+
+                if (newRow >= 0 && newCol >= 0 && newRow < input.size && newCol < input.first().length) {
+                    if (input[newRow][newCol] != '#') {
+                        dfs(Pair(newRow, newCol), stepsLeft - 1)
+                    }
                 }
             }
         }
-        return queue.toSet().size.toLong()
+
+        dfs(start, maximumSteps)
+
+//        println(destinations.sortedBy { it.second }.sortedBy { it.first })
+        return destinations.size.toLong()
     }
 
     fun part2(input: List<String>) : Long {
@@ -47,11 +48,11 @@ fun main() {
 
     val currentDay = "21"
     val finalInput = readInput("day$currentDay/Final")
-//  part 1
     val part1TestInput = readInput("day$currentDay/Test1")
-//    part1(part1TestInput, 6).println()
+    part1(part1TestInput, 6).println()
     part1(finalInput, 64).println()
-//  part 2
+
+
     val part2TestInput = readInput("day$currentDay/Test2")
 //    part2(part1TestInput).println()
 //    part2(finalInput).println()
