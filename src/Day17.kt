@@ -1,5 +1,4 @@
 import java.util.PriorityQueue
-import kotlin.math.abs
 
 fun main() {
     fun part1(input: List<String>) : Long = getAnswer(input, 3)
@@ -39,16 +38,16 @@ data class Node(
     val streak: Long,
     val score: Long,
 )
-fun Node.toState(): State = State(coordinates = coordinates, direction = direction, streak = streak)
+fun Node.toState(): DrillingState = DrillingState(coordinates = coordinates, direction = direction, streak = streak)
 
-data class State(
+data class DrillingState(
     val coordinates: Pair<Long, Long>,
     val direction: Pair<Long, Long>,
     val streak: Long,
 )
 
 private fun getAnswer(input: List<String>, consecutiveMax: Long, consecutiveMin: Long? = null) : Long {
-    val visited = mutableMapOf<State, Long>()
+    val visited = mutableMapOf<DrillingState, Long>()
     val endCoordinates = Pair(input.size-1.toLong(), input.first().length-1.toLong())
     fun isValid(r: Long, c: Long) : Boolean = (r in input.indices && c in input.first().indices)
 
