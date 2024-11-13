@@ -1,6 +1,18 @@
 import Utils.println
 import Utils.readInput
 
+fun firstAndLastDigitSum(s: String) : Int {
+    val a = s.first {
+        it.isDigit()
+    }.digitToInt()
+
+    val b = s.reversed().first {
+        it.isDigit()
+    }.digitToInt()
+
+    return a + b
+}
+
 fun main() {
     fun part1(input: List<String>) : Int =
     input.sumOf { str ->
